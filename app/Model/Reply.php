@@ -8,7 +8,7 @@ class Reply extends Model
 {
     public function question()
     {
-        return $this->belongsTo(Quesion::class);
+        return $this->belongsTo(Question::class);
     }
     public function user()
     {
