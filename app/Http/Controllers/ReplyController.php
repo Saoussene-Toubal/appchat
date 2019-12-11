@@ -1,63 +1,49 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Model\Reply;
+use App\Model\Question;
 use Illuminate\Http\Request;
-
+use App\Http\Controllers\ReplyResource;
+use Symfony\Component\HttpFondation\Response;
 class ReplyController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+   
+    public function index(Question $question)
     {
-        //
+        return $question;
+        //return Reply::latest()->get();
+        return ReplyResource::collection($question->replies);
+        
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    
+    public function store(Question $question, Request $request)
     {
-        //
+        $reply = $question->replies()->create($request->all());
+        return response(['reply'=> new ReplyResource($reply)], Response::HTTP_CREATED);
+        
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    
+    public function show(Question $question, Reply $reply)
     {
-        //
+        //return new ReplyResource($reply);
+        return $reply;
+    }
+   
+    
+    
+    public function update(Request $request, Reply $reply)
+    {
+        $reply->update($request->all());
+        return response('Update',Response::HTTP_ACCEPTED);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    
+    public function destroy(Question $question, Reply $reply)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $reply->delete();
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 }
